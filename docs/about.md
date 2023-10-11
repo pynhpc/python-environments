@@ -1,21 +1,3 @@
----
-permalink: /docs/about/
-title: "About"
-excerpt: "Minimal Mistakes is a flexible two-column Jekyll theme."
-layouts_gallery:
-  - url: /assets/images/mm-layout-splash.png
-    image_path: /assets/images/mm-layout-splash.png
-    alt: "splash layout example"
-  - url: /assets/images/mm-layout-single-meta.png
-    image_path: /assets/images/mm-layout-single-meta.png
-    alt: "single layout with comments and related posts"
-  - url: /assets/images/mm-layout-archive.png
-    image_path: /assets/images/mm-layout-archive.png
-    alt: "archive layout example"
-last_modified_at: 2022-05-27T11:59:26-04:00
-toc: true
----
-
 # Python on HPC Clusters
 
 ## About the Tutorials
@@ -31,16 +13,21 @@ the cluster resources.
 
 | Name                                        | Description                                           |
 | ------------------------------------------- | ----------------------------------------------------- |
-| [Post with Header Image][header-image-post] | A post with a large header image. |
-| [HTML Tags and Formatting Post][html-tags-post] | A variety of common markup showing how the theme styles them. |
-| [Syntax Highlighting Post][syntax-post] | Post displaying highlighted code. |
-| [Post with a Gallery][gallery-post] | A post showing several images wrapped in `<figure>` elements. |
-| [Sample Collection Page][sample-collection] | Single page from a collection. |
-| [Categories Archive][categories-archive] | Posts grouped by category. |
-| [Tags Archive][tags-archive] | Posts grouped by tag. |
+| [Running python Natively with a Module](python-on-hpc.md) | Covers the steps on how to run python with SLURM using python modules on HPC clusters. |
+| [Running python with python virtual environments](virtual-environments.md) | Covers managing python packages and running python scripts on HPC clusters with python virtual environments. |
+| [Running python with conda-environments](conda-environments.md) | Covers managing python packages and running python scripts on HPC clusters with conda environments. |
+| [Running python from a Notebook](jupypter-notebooks.md) | Covers managing python packages and running python on HPC clusters from a GUI while using either conda environments or python virtual environments. |
+| [Example with Pytorch](example-with-pytorch.md) | A hands-on demo with a pytorch example. |
 
 
+## Tutorial videos and Slides
+Links to recorded sessions and slides will be added ater the live tutorial session.
 
+## Upcoming Sessions
+
+| Title                                        | Date                                           |
+| ------------------------------------------- | ----------------------------------------------------- |
+|  | |
 
 
 ---
