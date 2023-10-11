@@ -12,7 +12,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Welcome to MkDocs";
+        var mkdocs_page_name = "Python on HPC Clusters";
         var mkdocs_page_input_path = "index.md";
         var mkdocs_page_url = null;
       </script>
@@ -77,7 +77,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Welcome to MkDocs</li>
+      <li class="breadcrumb-item active">Python on HPC Clusters</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -86,21 +86,64 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="welcome-to-mkdocs">Welcome to MkDocs</h1>
-<p>For full documentation visit <a href="https://www.mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="commands">Commands</h2>
-<ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs -h</code> - Print help message and exit.</li>
-</ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
-</code></pre>
+                <h1 id="python-on-hpc-clusters">Python on HPC Clusters</h1>
+<h2 id="about-the-tutorials">About the Tutorials</h2>
+<p>This tutorial series covers topics on using Python on HPC clusters. 
+The specific steps are based on the HOPPER cluster at George Mason University in Fairfax, VA.
+They should be implementable on most HPC clusters that have the <a href="https://www.schedmd.com/">SLURM</a> scheduler installed, the <a href="https://modules.sourceforge.net/">Environment Modules</a> system for managing packages and <a href="https://openondemand.org/">Open onDemand</a> for a web-based GUI to access 
+the cluster resources. </p>
+<hr />
+<h2 id="tutorial-pages">Tutorial Pages</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="python-on-hpc/">Running python Natively with a Module</a></td>
+<td>Covers the steps on how to run python with SLURM using python modules on HPC clusters.</td>
+</tr>
+<tr>
+<td><a href="virtual-environments/">Running python with python virtual environments</a></td>
+<td>Covers managing python packages and running python scripts on HPC clusters with python virtual environments.</td>
+</tr>
+<tr>
+<td><a href="conda-environments/">Running python with conda-environments</a></td>
+<td>Covers managing python packages and running python scripts on HPC clusters with conda environments.</td>
+</tr>
+<tr>
+<td><a href="jupypter-notebooks.md">Running python from a Notebook</a></td>
+<td>Covers managing python packages and running python on HPC clusters from a GUI while using either conda environments or python virtual environments.</td>
+</tr>
+<tr>
+<td><a href="example-with-pytorch/">Example with Pytorch</a></td>
+<td>A hands-on demo with a pytorch example.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="tutorial-videos-and-slides">Tutorial videos and Slides</h2>
+<p>Links to recorded sessions and slides will be added ater the live tutorial session.</p>
+<h2 id="upcoming-sessions">Upcoming Sessions</h2>
+<table>
+<thead>
+<tr>
+<th>Title</th>
+<th>Date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>For more tutorials and other demos for the GMU Hopper Cluster, you can check out the <a href="wiki.orc.gmu.edu">GMU ORC Wiki pages</a>.</p>
+<hr />
               
             </div>
           </div><footer>
@@ -144,5 +187,5 @@ docs/
 
 <!--
 MkDocs version : 1.5.3
-Build Date UTC : 2023-10-11 20:59:09.958883+00:00
+Build Date UTC : 2023-10-11 21:02:08.665352+00:00
 -->
