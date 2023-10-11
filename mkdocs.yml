@@ -1,8 +1,11 @@
 site_name: PyHPC
 
 nav:
-  - Home: index.md
-  - About: 02-about.md
-  - Tutorial: 01-tutorial.md
-
+  - Home: about.md
+  - Running Python as a Module: python-on-hpc.md
+  - Running in Python Virtual Environments: virtual-environments.md
+  - Running in Conda Environments: conda-environments.md
+  - Running from Jupyter Notebooks: jupyter-notebooks.md
+  - Example with Pytorch: example-with-pytorch.md
+   
 theme: readthedocs
