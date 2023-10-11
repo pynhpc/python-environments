@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Running Python as a Module - PyHPC</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Running Python as a Module";
+        var mkdocs_page_input_path = "python-on-hpc.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> PyHPC
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../about/">Home</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Running Python as a Module</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#python-versions">Python Versions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-a-python-job">Running a Python Job</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#interactively-on-a-cpu">Interactively on a CPU</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#interactively-on-a-gpu">Interactively on a GPU</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#using-a-slurm-submission-script">Using a SLURM Submission Script</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#optimizing-your-gpu-runs">Optimizing your GPU runs</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-parallel-python-jobs">Running Parallel Python Jobs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#multithreaded-python-job">Multithreaded Python Job</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#distributed-python-jobs-with-mpi4py">Distributed Python Jobs with mpi4py</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#installing-mpi4py-in-a-python-virtual-environment">Installing mpi4py in a Python Virtual Environment</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#using-mpipoolexecutor-in-a-python-program">Using MPIPoolExecutor in a Python Program</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#submitting-the-program-to-slurm">Submitting the Program to SLURM</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#using-external-python-packages">Using External Python Packages</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-with-python-virtual-environments">Running with Python Virtual Environments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-with-jupyter-notebooks">Running with Jupyter NoteBooks</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../virtual-environments/">Running in Python Virtual Environments</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../conda-environments/">Running in Conda Environments</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../jupyter-notebooks/">Running from Jupyter Notebooks</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../example-with-pytorch/">Example with Pytorch</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">PyHPC</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Running Python as a Module</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="running-python-on-the-orc-clusters">Running Python on the ORC Clusters</h1>
+<!--
+>  <span style="color: red;">**NOTE**</span> 
+> 
+>       
+>     To run Python jobs or build Python Virtual Environments that will run across all the nodes on Hopper, use the Python 
+>     modules under the GCC/10 compiler:
+>
+>     ```
+>      module load gnu10
+>      module load python/<version> ## the default python is version 3.10
+>
+>      ```  
+
+Different versions of Python are available on both Argo and Hopper clusters. Since the two clusters are 
+set up in very similar ways, the information below on running Python jobs will be applicable 
+to both clusters. 
+
+The main differences between Argo and Hopper are outlined on this page: [Difference between Argo and Hopper](ARGO_vs_HOPPER.md)
+
+-->
+
+<blockquote>
+<p>[!NOTE]
+To run Python jobs or build Python Virtual Environments that will run across all the nodes on Hopper, use the Python 
+modules under the GCC/10 compiler:</p>
+<pre><code>```
+ module load gnu10
+ module load python/&lt;version&gt; ## the default python is version 3.10
+
+ ```
+</code></pre>
+</blockquote>
+<p><span style="color: red;">The examples below will be based on the Hopper cluster</span>. Slight modifications in the SLURM scripts will be necessary 
+to run them on Argo.</p>
+<h2 id="python-versions">Python Versions</h2>
+<p>To see the available version of Python, run the command</p>
+<pre><code>ml spider python
+</code></pre>
+<p>This will list all the available versions of Python that are installed on the cluster and include all the different builds.</p>
+<pre><code>------------------------------------------------------------------------------------------------
+  python:
+------------------------------------------------------------------------------------------------
+     Versions:
+        python/2.7.18-z2
+        python/2.7.18-z4
+        python/3.7.4-rg
+        python/3.7.6-iu
+        python/3.7.6-ks
+        python/3.7.7-intel
+        python/3.8.6-ff
+        python/3.8.6-pi
+        python/3.8.6-kg
+        python/3.8.6-rp
+        python/3.8.6-vw
+        python/3.8.6-ye
+        python/3.8.6-p2
+        python/3.8.6-4q
+        python/3.9.7-intel
+        python/3.9.9-jh
+     Other possible modules matches:
+        intel-python  intelpython
+
+------------------------------------------------------------------------------------------------
+  To find other possible module matches execute:
+
+      $ module -r spider '.*python.*'
+
+------------------------------------------------------------------------------------------------
+
+</code></pre>
+<p>You can also run</p>
+<pre><code>module load gnu10
+module avail python
+
+</code></pre>
+<p>Which will show you only the GCC builds or the Intel builds, depending on which compiler you're working with. 
+Going with the recommended option (GNU-10.3.0 build), you should see</p>
+<pre><code>-------------------------------------------- GNU-10.3.0 ---------------------------------------------
+ python/3.8.6-pi    python/3.9.9-jh (D)
+
+  Where:
+   D:  Default Module
+
+</code></pre>
+<p>Running </p>
+<pre><code>module load python
+</code></pre>
+<p>will load the default version. You can also load a specific version with</p>
+<pre><code>module load python/&lt;version&gt;
+
+</code></pre>
+<p>With the Python module now in your path, you should be able to execute Python commands
+and run Python scripts.</p>
+<h2 id="running-a-python-job">Running a Python Job</h2>
+<h3 id="interactively-on-a-cpu">Interactively on a CPU</h3>
+<p><span style="color: red;">Python jobs should not be run directly on the head nodes</span>. The preferred method, even if you're testing 
+a small job, is to start a debug session directly on a compute node using the debug partition and then test your script or, for short jobs, 
+run it directly from the node. The default time limit on the debug partition is 1 hour. To get more information on the available partitions, resources, and limits on the node use the <code>sinfo</code> command.</p>
+<p>To connect directly to a compute node and use the debug partition, use the <code>salloc</code> command together with additional SLURM parameters</p>
+<pre><code>salloc -p debug  -n 1  --cpus-per-task=12 --mem=15GB
+
+</code></pre>
+<p>However, if you want to run an interactive job that may require a time limit of more than 1 hour use the command shown below :</p>
+<pre><code>salloc -p normal  -n 1  --cpus-per-task=12 --mem=15GB -t 0-02:00:00
+
+</code></pre>
+<p>This command will allocate you a single node with 12 cores and 15GB of memory for 2 hours on the normal partition.
+Once the resources become available, your prompt should now show that you're on one of the Hopper nodes.</p>
+<pre><code>salloc: Granted job allocation 
+salloc: Waiting for resource configuration
+salloc: Nodes hop065 are ready for job
+[user@hop065 ~]$
+
+</code></pre>
+<p>Modules you loaded while on the head nodes are exported onto the node as well. If you had not already 
+loaded any modules, you should be able to load them now as well. To check the currently loaded modules on the node use the command shown below :</p>
+<pre><code>[user@hop065 ~]$ module list
+
+Currently Loaded Modules:
+  1) use.own     3) prun/2.0       5) gnu10/10.3.0-ya   7) sqlite/3.37.1-6s   9) openmpi/4.1.2-4a
+  2) autotools   4) hosts/hopper   6) zlib/1.2.11-2y    8) tcl/8.6.11-d4     10) python/3.9.9-jh
+
+Inactive Modules:
+  1) openmpi4
+</code></pre>
+<p>You can now start Python to debug your code or use it interactively.</p>
+<pre><code>[user@hop065 ~]$ python
+Python 3.9.9 (main, Mar 25 2022, 16:08:31)
+[GCC 10.3.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;
+</code></pre>
+<p>You could also run your Python script directly</p>
+<pre><code>$ python myscript.py
+</code></pre>
+<p>The interactive session will persist until you type the 'exit' command as shown below:</p>
+<pre><code>$ exit
+
+exit
+salloc: Relinquishing job allocation 
+
+</code></pre>
+<h3 id="interactively-on-a-gpu">Interactively on a GPU</h3>
+<p>In a similar manner, you can start an interactive session on a GPU node with</p>
+<pre><code>salloc -p gpuq -q gpu --ntasks-per-node=1 --gres=gpu:A100.40gb:1 -t 0-01:00:00 
+
+</code></pre>
+<h3 id="using-a-slurm-submission-script">Using a SLURM Submission Script</h3>
+<p>Once your tests are done and you're ready to run longer Python jobs, you should now switch to using 
+the batch submission with SLURM. To do this, you write a SLURM script setting the different parameters 
+for your job, loading the necessary modules, and executing your Python script which is then submitted to the 
+selected queue from where it will run your job. Below is an example SLURM script (<code>run.slurm</code>):</p>
+<pre><code>
+#!/bin/bash
+#SBATCH --partition=normal                 # will run on any cpus in the 'normal' partition
+#SBATCH --job-name=python-cpu
+## Separate output and error messages into 2 files.
+## NOTE: %u=userID, %x=jobName, %N=nodeID, %j=jobID
+#SBATCH --output=/scratch/%u/%x-%N-%j.out  # Output file
+#SBATCH --error=/scratch/%u/%x-%N-%j.err   # Error file
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=1                   # up to 48 per node
+#SBATCH --mem-per-cpu=3500M                 # memory per CORE; maximum is 180GB per node
+#SBATCH --export=ALL
+#SBATCH --time=0-01:00:00                   # set to 1hr; please choose carefully
+
+set echo
+umask 0027
+
+module load gnu10
+module load python                          # load the recommended Python version
+
+python myscript.py                          # execute your Python script
+
+</code></pre>
+<p>If you need GPU nodes for your Python job, you would change the partition information to the <code>gpuq</code> and set the number of GPU nodes needed.</p>
+<pre><code>#!/bin/bash
+#SBATCH --partition=gpuq                    # the DGX only belongs in the 'gpu'  partition
+#SBATCH --qos=gpu                           # need to select 'gpu' QoS
+#SBATCH --job-name=python-gpu
+## Separate output and error messages into 2 files.
+## NOTE: %u=userID, %x=jobName, %N=nodeID, %j=jobID
+#SBATCH --output=/scratch/%u/%x-%N-%j.out  # Output file
+#SBATCH --error=/scratch/%u/%x-%N-%j.err   # Error file
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1                 # up to 128; 
+#SBATCH --gres=gpu:A100.80gb:1              # up to 8; only request what you need
+#SBATCH --mem-per-cpu=3500M                 # memory per CORE; total memory is 1 TB (1,000,000 MB)
+#SBATCH --export=ALL 
+#SBATCH --time=0-01:00:00                   # set to 1hr; please choose carefully
+
+set echo
+umask 0027
+
+# to see ID and state of GPUs assigned
+nvidia-smi
+
+module load gnu10                           
+module load python
+
+python myscript.py
+
+</code></pre>
+<p>Please use the scratch space to submit your job's SLURM script with</p>
+<pre><code>sbatch run.slurm
+
+</code></pre>
+<p>To access scratch space use <code>cd /scratch/UserID</code> command to change directories(replace 'UserId' with  your GMU GMUnetID). Please note that scratch directories have no space limit and data in /scratch gets purged 90 days from the date of creation, so make sure to move your files to a safe place before the purge.</p>
+<p>To copy files directly from scratch to your project space you can use the <code>cp</code> command to create a copy of the contents of the file or directory specified by the SourceFile or SourceDirectory parameters into the file or directory specified by the TargetFile or TargetDirectory parameters. The <code>cp</code> command also copies entire directories into other directories if you specify the -r or -R flags.
+The command below copies entire files from the scratch space to your project space (" /projects/orctest" as shown in the example below, where " /projects/orctest" is a project space)</p>
+<pre><code>[UserId@hopper2 ~]$ cd /scratch/UserId
+[UserId@hopper2 UserId]$ cp -p -r *  /projects/orctest
+
+</code></pre>
+<h3 id="optimizing-your-gpu-runs">Optimizing your GPU runs</h3>
+<p>Current available GPU node options</p>
+<table>
+<thead>
+<tr>
+<th>Type of GPU</th>
+<th>SLURM setting</th>
+<th>No. of GPUs on Node</th>
+<th>No. of CPUs</th>
+<th>RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A100 80GB</td>
+<td>--gres=gpu:A100.80gb:nGPUS</td>
+<td>4</td>
+<td>64</td>
+<td>500GB</td>
+</tr>
+<tr>
+<td>DGX A100 40GB</td>
+<td>--gres=gpu:A100.40gb:nGPUs</td>
+<td>8</td>
+<td>128</td>
+<td>1TB</td>
+</tr>
+</tbody>
+</table>
+<p>The way the GPU nodes are partitioned will likely change over time to optimize utilization.</p>
+<p>The best way to take advantage of this Multi-Instance GPU (MIG) mode operation is to analyze the demands of your job and determine which GPU slice is available and suitable for it. For example, if your simulation uses very small GPU memory, you would be better off using a 1g.5gb (where 5GB is the memory you get in the GPU) slice and leaving the bigger slices to jobs that need more GPU memory. Another consideration for machine learning jobs is the difference in demands of training and inference tasks. Training tasks require more computation and memory, therefore they perform best on a full GPU node or a large slice, whereas inference tasks can be adequately performed on smaller slices.</p>
+<p>You would modify your SLURM script so that you are now requesting a suitable GPU slice:</p>
+<pre><code>#!/bin/bash
+#SBATCH --partition=gpuq                    # the DGX only belongs in the 'gpu'  partition
+#SBATCH --qos=gpu                           # need to select 'gpu' QoS
+#SBATCH --job-name=python-gpu
+## Separate output and error messages into 2 files.
+## NOTE: %u=userID, %x=jobName, %N=nodeID, %j=jobID
+#SBATCH --output=/scratch/%u/%x-%N-%j.out  # Output file
+#SBATCH --error=/scratch/%u/%x-%N-%j.err   # Error file
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1                 # up to 128; 
+#SBATCH --gres=gpu:1g.10gb:1                 # request a slice of the GPU
+#SBATCH --mem-per-cpu=3500M                 # memory per CORE; total memory is 1 TB (1,000,000 MB)
+#SBATCH --export=ALL 
+#SBATCH --time=0-01:00:00                   # set to 1hr; please choose carefully
+
+set echo
+umask 0027
+
+# to see ID and state of GPUs assigned
+nvidia-smi
+
+module load gnu10                            
+module load python
+
+python myscript.py
+
+</code></pre>
+<p>Read more about the Hopper GPU nodes and other examples on the <a href="DGX_A100_User_Guide.md">DGX USER GUIDE.</a></p>
+<h2 id="running-parallel-python-jobs">Running Parallel Python Jobs</h2>
+<p>When working on a cluster computer, it is natural to ask how to take
+advantage of all these nodes and cores in order to speed up
+computation as much as possible. On a laptop, one common approach is to
+use the <code>Pool</code> class in the Python <code>multiprocessing</code> library to
+distribute computation to other cores on the machine. While this
+approach certainly works on a cluster too, it does not allow you to take
+full advantage of the available computing power. Each job is limited to
+a single node and all the cores that are currently available on it. </p>
+<h3 id="multithreaded-python-job">Multithreaded Python Job</h3>
+<p>Below is an example SLURM script that can be used to run a Python script
+that implements the 'multiprocessing' module.</p>
+<pre><code>
+#!/bin/sh
+
+## Give your job a name to distinguish it from other jobs you run.
+#SBATCH --job-name=threaded
+#SBATCH --partition=normal                 # will run on any cpus in the 'normal' partition
+## Separate output and error messages into 2 files.
+## NOTE: %u=userID, %x=jobName, %N=nodeID, %j=jobID
+#SBATCH --output=/scratch/%u/%x-%N-%j.out  # Output file
+#SBATCH --error=/scratch/%u/%x-%N-%j.err   # Error file
+#SBATCH --constraint=amd ## or intel
+#SBATCH --nodes=1   ## all threads need to be on a single node
+#SBATCH --cpus-per-task=24   ## 48 or 64 processor
+#SBATCH --mem=5G        # Total memory needed per task (units: K,M,G,T)
+#SBATCH --time=0-01:00:00                   # set to 1hr; please choose carefully 
+set echo
+umask 0027
+
+# to see ID and state of GPUs assigned
+nvidia-smi
+## Load the relevant modules needed for the job
+module load gnu10                            
+module load python
+
+## Run your program or script
+python &lt;your-threaded-script&gt;.py
+
+</code></pre>
+<p>The Python script below which can be downloaded here: <a href="parallel_jobs_examples/mpithread.py">multithreaded.py</a> can be used as a test case for threaded jobs in Python.</p>
+<pre><code class="language-python">#!/usr/bin/env python
+
+import numpy as np
+import multiprocessing as mp
+
+if __name__ == '__main__':
+  np.random.seed(0);
+
+  # create two matrices to be passed
+  # to two different processes
+  mat1 = np.random.rand(3,3);
+  mat2 = np.random.rand(2,2);
+
+  # define number of processes
+  ntasks =2;
+
+  # create a pool of processes
+  p = mp.Pool(ntasks);
+
+  # feed different process with same task
+  # but different data and print the result
+  print(p.map(np.linalg.eigvals,[mat1,mat2]))
+
+</code></pre>
+<h3 id="distributed-python-jobs-with-mpi4py">Distributed Python Jobs with mpi4py</h3>
+<p>The <code>mpi4py</code> library has a Pool-like class that is very similar to the
+one in the <code>multiprocessing</code> library. Here, we describe how to setup a Python virtual environment
+to use <code>mpi4py</code> run Python code to take advantage
+of a much larger number of cores.</p>
+<h4 id="installing-mpi4py-in-a-python-virtual-environment">Installing mpi4py in a Python Virtual Environment</h4>
+<p>When installing Python modules, we recommend using a <a href="Python_Virtual_Environment.md">Python Virtual
+Environment</a>. When working on a
+project you may want to install a number of different
+packages. We recommend creating one VE for each project and installing
+everything that you need into it.</p>
+<p>For the purposes of this demonstration, let’s create a virtual
+environment called MPIpool and install <code>mpi4py</code> into it.</p>
+<pre><code>[UserId@hopper1 ~]$ module load gnu10
+[UserId@hopper1 ~]$ module load python
+[UserId@hopper1 ~]$ module load openmpi4/4.1.2
+[UserId@hopper1 ~]$ python -m venv ~/MPIpool
+[UserId@hopper1 ~]$ source ~/MPIpool/bin/activate
+(MPIpool) [UserId@hopper1 ~]$ pip install mpi4py
+Collecting mpi4py
+  Using cached h⁣ttps://files.pythonhosted.org/packages/04/f5/a615603ce4ab7f40b65dba63759455e3da610d9a155d4d4cece1d8fd6706/mpi4py-3.0.2.tar.gz
+Installing collected packages: mpi4py
+  Running setup.py install for mpi4py ... done
+Successfully installed mpi4py-3.0.2
+
+</code></pre>
+<h4 id="using-mpipoolexecutor-in-a-python-program">Using MPIPoolExecutor in a Python Program</h4>
+<p>Here we have a sample Python program (which can be downloaded here: <a href="parallel_jobs_examples/MPIpool.py">MPIpool.py</a> ) that calculates prime numbers. It
+uses the <code>MPIPoolExecutor</code> class to farm out calculations to "workers".
+The workers can be running on any node and core in the cluster. There
+must always be one "manager" that is responsible for farming out the
+work, and collecting the results when finished.</p>
+<pre><code>
+# MPIpool.py
+
+from mpi4py.futures import MPIPoolExecutor
+import math
+import textwrap
+
+def calc_primes(range_tuple):
+    &quot;&quot;&quot;Calculate all the prime numbers in the given range.&quot;&quot;&quot;
+    low, high = range_tuple
+    if low &lt;= 2 &lt; high:
+        primes = [2]
+    else:
+        primes = []
+
+    start = max(3,low)   # Don't start below 3
+    if start % 2 == 0:   # Make sure start is odd, i.e. skip evens
+        start += 1
+
+    for num in range(start, high, 2):  # increment by 2's, i.e. skip evens
+        if all(num % i != 0 for i in range(3, int(math.sqrt(num)) + 1, 2)):
+            primes.append(num)
+
+    return primes
+
+def determine_subranges(fullrange, num_subranges):
+    &quot;&quot;&quot;
+    Break fullrange up into smaller sets of ranges that cover all
+    the same numbers.
+    &quot;&quot;&quot;
+    subranges = []
+    inc = fullrange[1] // num_subranges
+    for i in range(fullrange[0], fullrange[1], inc):
+        subranges.append( (i, min(i+inc, fullrange[1])) )
+    return( subranges )
+
+if __name__ == '__main__':
+    fullrange = (0, 100000000)
+    num_subranges = 1000
+    subranges = determine_subranges(fullrange, num_subranges)
+
+    executor = MPIPoolExecutor()
+    prime_sets = executor.map(calc_primes, subranges)
+    executor.shutdown()
+
+    # flatten the list of lists
+    primes = [p for plist in prime_sets for p in plist]
+    print(textwrap.fill(str(primes),80))
+
+</code></pre>
+<p>The main work is done in the <code>calc_primes()</code> function, which is what the
+workers run. It calculates all the prime numbers within a range defined
+by <code>rangeTuple</code>, a vector that contains two values: the lower and upper
+bounds of the range.</p>
+<p>The rest of the code runs on the "manager". It calls the
+<code>determine_subranges()</code> function to define the different pieces of work
+to send to the workers. The <code>MPIPoolExecutor.map()</code> function actually
+handles all the complexity of coordinating communications with workers,
+farming out the different tasks, and then collecting the results.</p>
+<p>The <code>mpi4py</code> <a href="https://mediawiki.org">documentation</a> suggest that when
+using <code>MPIPoolExecutor</code>, your code should use the
+<code>if __name__ == '__main__':</code> code construct at the bottom of your main
+file in order to <a href="https://mpi4py.readthedocs.io/en/stable/mpi4py.futures.html#mpipoolexecutor">prevent workers from spawning more
+workers</a>.</p>
+<h4 id="submitting-the-program-to-slurm">Submitting the Program to SLURM</h4>
+<p>Here we provide a SLURM script for running such a job.</p>
+<pre><code>
+#!/bin/sh
+
+## Give your job a name to distinguish it from other jobs you run.
+#SBATCH --job-name=MPIpool
+#SBATCH --partition=normal
+## Separate output and error messages into 2 files.
+## NOTE: %u=userID, %x=jobName, %N=nodeID, %j=jobID, %A=arrayID, %a=arrayTaskID
+#SBATCH --output=/scratch/%u/%x-%N-%j.out  # Output file
+#SBATCH --error=/scratch/%u/%x-%N-%j.err   # Error file
+## Slurm can send you updates via email
+#SBATCH --mail-type=BEGIN,END,FAIL         # ALL,NONE,BEGIN,END,FAIL,REQUEUE,..
+#SBATCH --mail-user=&lt;GMUnetID&gt;@gmu.edu     # Put your GMU email address here
+## Specify how much memory your job needs. (2G is the default)
+#SBATCH --mem=8G        # Total memory needed per task (units: K,M,G,T)
+## Specify how much time your job needs. (default: see partition above)
+#SBATCH --time=0-02:00   # Total time needed for job: Days-Hours:Minutes
+#SBATCH --ntasks=51   # 50 workers, 1 manager
+set echo
+umask 0027
+
+# to see ID and state of GPUs assigned
+nvidia-smi
+## Load the relevant modules needed for the job
+module load gnu10                            
+module load python
+module load openmpi4/4.1.2
+source ~/MPIpool/bin/activate
+
+## Run your program or script
+mpirun -np $SLURM_NTASKS python -m mpi4py.futures MPIpool.py
+
+</code></pre>
+<p><span style="color:red">Be sure to replace the <GMUnetID> (including the
+<code>&lt;</code> and <code>&gt;</code>) with you own email address.</span></p>
+<p>Note that we set <code>--ntasks=51</code> in order to allocate 1 manager and 50
+workers. There must always be only 1 manager and at least 1 worker. Note
+that we use the <code>$SLURM_NTASKS</code> environment variable in the call to
+<code>mpirun</code> to make sure that the number of cores used equals the number
+allocated by the <code>--ntasks=</code> option.</p>
+<p>Because <code>mpi4py</code> is based on the MPI libraries, we need to load one of
+the MPI modules. Here we have chosen OpenMPI. The <code>mpirun</code> or <code>mpiexec</code>
+program must be used to properly launch an MPI program, and this program
+is no exception.</p>
+<p>The runtime for this program using 50 workers is about 1 minute. That is
+significantly faster than the 45 minutes needed to run the program using
+a single core. Of course, there is a point of diminishing returns (and
+even an added cost) in adding more and more workers. It is good to
+experiment with different numbers to see how many workers are optimal.
+The maximum number of cores that a user can request is currently 300.
+This may change in the future.</p>
+<p>This is an example of an algorithm that is "embarrassingly parallel". It
+is very easy to divide it up into smaller pieces and pass them out. Many
+algorithms are not so easy to parallelize in this way. MPI is a very
+mature library, and it has the tools to handle problems that are much
+more complex than this. It is the de facto standard for doing large
+scale parallelization, and if that is your goal you can benefit from
+learning more about it. Those interested in a more "Pythonic" library
+may want to look into <a href="https://dask.org/">Dask</a>.</p>
+<h2 id="using-external-python-packages">Using External Python Packages</h2>
+<p>To install and run your Python code with external Python packages, after loading the Python module, first
+create a directory for storing those packages (e.g. <code>~/python-packages/projectX</code>)</p>
+<pre><code>mkdir ~/python-packages
+mkdir ~/python-packages/projectX
+
+</code></pre>
+<p>Then install the appropriate packages in there:</p>
+<pre><code>pip install &lt;package1&gt; -t ~/python-packages/projectX
+
+</code></pre>
+<p>To run your code with these extra packages, you would need to add the <code>export</code> command to your
+SLURM submission script so that the last part  would now be</p>
+<pre><code>module load gnu10
+module load python
+export PYTHONPATH=~/python-packages/projectX:$PYTHONPATH
+
+python myscript.py
+
+</code></pre>
+<p>If instead, you were running interactively, then you need to run the <code>export</code> command from the terminal</p>
+<pre><code>$ export PYTHONPATH=~/python-packages/projectX:$PYTHONPATH
+
+</code></pre>
+<h2 id="running-with-python-virtual-environments">Running with Python Virtual Environments</h2>
+<p>To have better control over the Python packages and libraries you need to use on the cluster, the
+best way to run Python is using Python Virtual Environments. This is especially useful for 
+codes that use Tensorflow, Keras or Pytorch. Read our instructions on 
+<a href="Python_Virtual_Environment.md">building Python Virtual Environments</a>
+and <a href="How_to_Run_Tensorflow/Running_Tensorflow.md">how to run Tensorflow</a>.</p>
+<blockquote>
+<p><strong>Remember</strong>  </p>
+<p>When running on Argo, the SLURM scripts have to be updated so that they can be run on Argo. The main differences between
+ Argo and Hopper are detailed in <a href="http://wiki.orc.gmu.edu/mkdocs/ARGO_vs_HOPPER/">these pages</a>.</p>
+</blockquote>
+<h2 id="running-with-jupyter-notebooks">Running with Jupyter NoteBooks</h2>
+<p>You also have the option of using Jupyter Notebooks (on Hopper) to run Python code. The steps for doing this are outlined in <a href="Running_Jupyter_Notebooks.md">these pages.</a>  </p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../about/" class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../virtual-environments/" class="btn btn-neutral float-right" title="Running in Python Virtual Environments">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../about/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../virtual-environments/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

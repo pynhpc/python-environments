@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Running in Python Virtual Environments - PyHPC</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Running in Python Virtual Environments";
+        var mkdocs_page_input_path = "virtual-environments.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> PyHPC
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../about/">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../python-on-hpc/">Running Python as a Module</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Running in Python Virtual Environments</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../conda-environments/">Running in Conda Environments</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../jupyter-notebooks/">Running from Jupyter Notebooks</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../example-with-pytorch/">Example with Pytorch</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">PyHPC</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Running in Python Virtual Environments</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="python-virtual-environments-on-hopper">Python Virtual Environments On Hopper</h2>
+<p>There are different approaches in the Python ecosystem for creating virtual environments (VE): <code>pyenv</code>, <code>venv</code>, <code>virtualenv</code>, <code>virtualenvwrapper</code>, and <code>pipenv</code>. Among these, the methods <code>venv</code> and <code>virtualenv</code> are quite similar, and either one can be chosen. The key distinction between these two lies in how they handle Python executables within the virtual environment folder:</p>
+<ul>
+<li><code>venv</code> creates a virtual environment without copying Python executables.</li>
+<li><code>virtualenv</code> creates a virtual environment by copying Python executables.</li>
+</ul>
+<p>Before utilizing Python Virtual Environments on Hopper, please take note of the following:</p>
+<ul>
+<li><strong>Python environments need to be established separately on Hopper. A Python Virtual environment built on Hopper should not be expected to function on any other system.</strong></li>
+<li><strong>For Hopper, it is recommended to employ <code>venv</code> for creating virtual environments, following the process detailed below.</strong></li>
+</ul>
+<h2 id="starting-an-interactive-session-on-hopper-gpus">Starting an interactive Session on Hopper GPUs</h2>
+<p>If you intend to run the Python Virtual Environments on the Hopper DGX-A100 GPU nodes, the first step is to get directly on the
+GPU node by starting an interactive session with the <code>salloc</code> command</p>
+<pre><code>salloc -p gpuq -q gpu -n 1 --ntasks-per-node=1 --gres=gpu:A100.40gb:1 --mem=50GB
+
+</code></pre>
+<p>Currently available GPU node options</p>
+<table>
+<thead>
+<tr>
+<th>Type of GPU</th>
+<th>SLURM setting</th>
+<th>No. of GPUs on Node</th>
+<th>No. of CPUs</th>
+<th>RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A100 80GB</td>
+<td>--gres=gpu:A100.80gb:nGPUS</td>
+<td>4</td>
+<td>64</td>
+<td>500GB</td>
+</tr>
+<tr>
+<td>DGX A100 40GB</td>
+<td>--gres=gpu:A100.40gb:nGPUs</td>
+<td>8</td>
+<td>128</td>
+<td>1TB</td>
+</tr>
+</tbody>
+</table>
+<p>If you don't want to use DGX nodes you can also use the below command to start an interactive session on the contrib-gpuq partition</p>
+<pre><code>salloc -p contrib-gpuq -q gpu -n 1 --ntasks-per-node=1 --gres=gpu:1 --mem=5GB
+</code></pre>
+<p>The way the GPU nodes are partitioned will likely change over time to optimize utilization. Use the <code>sinfo</code> command to view the list of nodes available, the time restriction for each node, and the available partitions.</p>
+<p>Once you have the interactive session started, you should load the necessary modules. For Python on the DGX nodes,
+ use the module <code>python/3.8.6-ff</code> which has been built to run across both the CPU nodes and GPU nodes. Currently,
+ other Python modules will not work across both the GPU and CPU nodes because of the differences in architecture.</p>
+<h2 id="creating-a-python-virtual-environment">Creating a Python Virtual Environment</h2>
+<p><code>venv</code> is a Python module available in the standard library and compatible with most Python versions. It simplifies the creation of isolated environments for Python projects. Unlike other environment management tools, <code>venv</code> ensures that libraries are not shared with other virtual environments by default. You also have the option to prevent access to globally installed libraries if desired.</p>
+<p>When you utilize <code>venv</code> to create a virtual environment, it establishes an isolated space where you can install your project's dependencies independently. Unlike tools like Virtualenv, <code>venv</code> does not rely on copying the Python interpreter binary into the virtual environment directory. Instead, it often employs symbolic links to the existing Python interpreter on your system. As a result, the virtual environment created by <code>venv</code> contains symbolic links to the Python executable, optimizing disk space usage.</p>
+<p>To summarize, <code>venv</code> is a built-in module within Python's standard library that offers a simple method for establishing isolated environments tailored to Python projects. It avoids library sharing between virtual environments and enables efficient management of project-specific dependencies.</p>
+<h1 id="python-virtual-environment-setup-for-hopper-cluster">Python Virtual Environment Setup for Hopper Cluster</h1>
+<p>To ensure that your Python Virtual Environment runs consistently across all nodes, it's important to use modules built for this purpose. Before creating the Python Virtual Environment, follow these steps:</p>
+<p>1 - First switch modules to GNU 10 compilations:</p>
+<pre><code>module load gnu10/10.3.0-ya
+</code></pre>
+<p>2 - Check and load python module</p>
+<pre><code>module avail python
+module load python/3.8.6-pi
+</code></pre>
+<p>3 - Now you can create the python virtual environment. After it is created, activate it and upgrade pip</p>
+<pre><code>python -m venv py-env
+
+source py-env/bin/activate
+
+python -m pip install --upgrade pip
+</code></pre>
+<p>4 - Remove system python module and install  modules </p>
+<pre><code>module unload python
+pip install sklearn
+
+</code></pre>
+<p>5 - Install additional modules as needed, test your scripts and deactivate the python virtual environment once you're done.</p>
+<pre><code>deactivate
+
+</code></pre>
+<h3 id="example">Example:</h3>
+<p>================================================================== </p>
+<pre><code>[user@hopper2 ~]$ python -m venv py-env
+[user@hopper2 ~]$ source py-env/bin/activate
+(py-env) [user@hopper2 ~]$ python -m pip install --upgrade pip
+Collecting pip
+  Downloading pip-23.2.1-py3-none-any.whl (2.1 MB)
+     |████████████████████████████████| 2.1 MB 13.6 MB/s
+Installing collected packages: pip
+  Attempting uninstall: pip
+    Found existing installation: pip 20.2.1
+    Uninstalling pip-20.2.1:
+      Successfully uninstalled pip-20.2.1
+Successfully installed pip-23.2.1
+(py-env) [user@hopper2 ~]$ module unload python
+(py-env) [user@hopper2 ~]$ pip install sklearn
+Collecting sklearn
+  Downloading sklearn-0.0.post7.tar.gz (3.6 kB)
+  Installing build dependencies ... done
+  Getting requirements to build wheel ... done
+  Preparing metadata (pyproject.toml) ... done
+Building wheels for collected packages: sklearn
+  Building wheel for sklearn (pyproject.toml) ... done
+  Created wheel for sklearn: filename=sklearn-0.0.post7-py3-none-any.whl size=2951 sha256=c62d78ad5864da7dddeea4f58c96b35c6bab2584dec8748ce5687b788491f2eb
+  Stored in directory: /home/smudund/.cache/pip/wheels/bc/86/46/dd4e366dc5e1303b4d6927d2a603a1ae7f979d488a5d202330
+Successfully built sklearn
+Installing collected packages: sklearn
+Successfully installed sklearn-0.0.post7
+(py-env) [user@hopper2 ~]$ deactivate
+[user@hopper2 ~]$
+</code></pre>
+<h2 id="things-to-remember-before-creating-a-virtual-environment">Things to remember before creating a virtual environment</h2>
+<ol>
+<li>To create a Python Virtual Environment from a login node, <strong>a Python module must first be
+loaded using the ‘module load’ command</strong>. </li>
+</ol>
+<p><strong>On Hopper</strong>, you need to make sure you
+have loaded one of the correct Python modules compiled under GNU 10 to 
+run across all nodes. Do this by first loading the gnu10 module and then the Python 
+modules under it:</p>
+<pre><code>module load gnu10
+module load python/&lt;version&gt;
+</code></pre>
+<ol>
+<li>Using “pip install <package_name>” within an activated Virtual Environment installs
+the package in the Virtual Environment’s home directory and is available only to that Virtual Environment.
+However, if you use “pip install --user <package_name>” within an
+activated Virtual Environment, then the package is installed both in the Virtual Environment’s home
+directory and in /home/$USER/.local directory. By being installed in the
+/home/$USER/.local directory that package is then available to all Virtual Environments
+you create. So, the use of “--user” option with <em>pip install</em> is not
+recommended.</li>
+</ol>
+<h2 id="using-a-python-virtual-environment-in-a-slurm-submission-script">Using a Python Virtual Environment in a SLURM submission script</h2>
+<p>Below is a sample SLURM submission script. Save the information into <code>run.slurm</code>,<br />
+update the timing information, the <code>&lt;N_CPU_CORES&gt;</code>, <code>&lt;MEMORY&gt;</code> and <code>&lt;N_GPUs&gt;</code> to reflect the 
+number of CPU cores and GPUs you need (referring to the table above) and submit it by entering </p>
+<pre><code>sbatch run.slurm
+</code></pre>
+<p>Sample script, <code>run.slurm</code>:</p>
+<pre><code>#!/bin/bash 
+#SBATCH --partition=gpuq 
+#SBATCH --qos=gpu 
+#SBATCH --job-name=gpu_basics 
+#SBATCH --output=gpu_basics.%j.out 
+#SBATCH --error=gpu_basics.%j.out 
+#SBATCH --nodes=1 
+#SBATCH --ntasks-per-node=&lt;N_CPU_CORES&gt; 
+#SBATCH --gres=gpu:A100.80gb:&lt;N_GPUs&gt; 
+#SBATCH --mem=&lt;MEMORY&gt;  
+#SBATCH --export=ALL 
+#SBATCH -time=0-01:00:00 
+#
+set echo 
+umask 0022 
+# to see ID and state of GPUs assigned
+nvidia-smi 
+
+## Load the necessary modules
+module load gnu10
+module load python
+
+## Execute your script
+python main.py
+
+</code></pre>
+<h2 id="adding-your-python-virtual-environment-as-a-kernel-in-jupyterlabs">Adding your Python Virtual Environment as a Kernel in JupyterLabs</h2>
+<p>Python Virtual Environments created on Hopper can be added as kernels to the 
+<a href="Running_Jupyter_Notebooks.md">JupyterLab</a> sessions started under 
+<a href="open_on_demand_on_Hopper.md">Open OnDemand</a>. 
+To see your Python Virtual Environment as a kernel,
+first, activate the virtual environment from the command line:</p>
+<pre><code>source test-env/bin/activate
+
+</code></pre>
+<p>Next pip install ipykernel</p>
+<pre><code>pip install ipykernel
+</code></pre>
+<p>and then add the kernel for the virtual environment</p>
+<pre><code>Python -m ipykernel install --user --name=env-name
+</code></pre>
+<p>Finally, deactivate your environment. After this, the next time you start a JupyterLab session
+on <a href="open_ondemand_on_Hopper.md">Open OnDemand</a> you should see your added kernel as an option.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../python-on-hpc/" class="btn btn-neutral float-left" title="Running Python as a Module"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../conda-environments/" class="btn btn-neutral float-right" title="Running in Conda Environments">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../python-on-hpc/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../conda-environments/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

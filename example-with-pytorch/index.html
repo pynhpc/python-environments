@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Example with Pytorch - PyHPC</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Example with Pytorch";
+        var mkdocs_page_input_path = "example-with-pytorch.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> PyHPC
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../about/">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../python-on-hpc/">Running Python as a Module</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../virtual-environments/">Running in Python Virtual Environments</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../conda-environments/">Running in Conda Environments</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../jupyter-notebooks/">Running from Jupyter Notebooks</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Example with Pytorch</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#running-with-the-system-python-in-batch-mode">Running with the System Python in Batch Mode</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-interactively-on-a-gpu-node">Running interactively on a GPU node</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#managing-pytorch-and-other-packages-with-python-virtual-environments">Managing pytorch and other packages with python virtual environments</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#running-pytorch-with-singularity-containers">Running Pytorch with Singularity Containers</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#common-pytorch-issues">Common Pytorch Issues</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">PyHPC</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Example with Pytorch</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="running-pytorch-jobs-on-hopper">Running Pytorch Jobs on Hopper</h1>
+<p>Runs requiring Pytorch can be run directly using the system installed python or a python virtual 
+environment or any one of the available containers.</p>
+<h2 id="running-with-the-system-python-in-batch-mode">Running with the System Python in Batch Mode</h2>
+<p>To run with the system python, log in to the cluster AMD head node which has a gpu card that 
+allows for testing gpu codes.</p>
+<pre><code>ssh NetID@hopper-amd.orc.gmu.edu
+</code></pre>
+<p>On the hopper-amd headnode, load the GNU 10 and default python - version 3.9.9</p>
+<pre><code>module load gnu10
+module load python
+</code></pre>
+<p>You can test and work on short running scripts directly on the headnode:</p>
+<pre><code>python main.py
+</code></pre>
+<p>Once you're ready, use a SLURM script to run your code in batch mode. When setting the SLURM 
+parameters in your script, pay attention to the the following:</p>
+<p>1 - The partition and QOS:</p>
+<pre><code>#SBATCH --partition=gpuq
+#SBATCH --qos=gpuq
+</code></pre>
+<p>Groups that have access to the gpuq can use the <code>contrib-gpuq</code> partition with the 
+corresponding group QOS. The time limit on the gpuq partiton defaults to 3 days:</p>
+<pre><code>#SBATCH --time=3-00:00:00
+</code></pre>
+<p>but can be set to a maximum of 5 days.</p>
+<p>2 - GPU node options:</p>
+<table>
+<thead>
+<tr>
+<th>Type of GPU</th>
+<th>SLURM setting</th>
+<th>No. of GPUs on Node</th>
+<th>No. of CPUs</th>
+<th>RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A100 80GB</td>
+<td>--gres=gpu:A100.80gb:nGPUS</td>
+<td>4</td>
+<td>64</td>
+<td>500GB</td>
+</tr>
+<tr>
+<td>DGX A100 40GB</td>
+<td>--gres=gpu:A100.40gb:nGPUs</td>
+<td>8</td>
+<td>128</td>
+<td>1TB</td>
+</tr>
+</tbody>
+</table>
+<p>Below is a sample SLURM submission script. Save the information into <code>run.slurm</code>,<br />
+update the timing information, the <code>&lt;N_CPU_CORES&gt;</code>, <code>&lt;MEMORY&gt;</code> and <code>&lt;N_GPUs&gt;</code> to reflect the 
+number of CPU cores and GPUs you need (referring to the table above) and submit it by entering </p>
+<pre><code>sbatch run.slurm
+</code></pre>
+<p>Sample script, <code>run.slurm</code>:</p>
+<pre><code>#!/bin/bash 
+#SBATCH --partition=gpuq 
+#SBATCH --qos=gpu 
+#SBATCH --job-name=gpu_basics 
+#SBATCH --output=gpu_basics.%j.out 
+#SBATCH --error=gpu_basics.%j.out 
+#SBATCH --nodes=1 
+#SBATCH --ntasks-per-node=&lt;N_CPU_CORES&gt; 
+#SBATCH --gres=gpu:A100.80gb:&lt;N_GPUs&gt; 
+#SBATCH --mem=&lt;MEMORY&gt;  
+#SBATCH --export=ALL 
+#SBATCH -time=0-01:00:00 
+#
+set echo 
+umask 0022 
+# to see ID and state of GPUs assigned
+nvidia-smi 
+
+## Load the necessary modules
+module load gnu10
+module load python
+
+## Execute your script
+python main.py
+
+</code></pre>
+<h2 id="running-interactively-on-a-gpu-node">Running interactively on a GPU node</h2>
+<p>To work directly on a gpu node, start interactive session with</p>
+<pre><code>salloc -p gpuq -q gpu --nodes=1 --ntasks-per-node=4 --constraint=amd --gres=gpu:A100.80gb:1 --mem=50GB --pty $SHELL
+</code></pre>
+<p>The gres and other parameters can be adjusted to match the required resources. Once on the gpu node, the same steps 
+as outlined above can be followed to set up your environment and run your code. If no time limit had been set 
+the session will continue until it is ended with</p>
+<pre><code>exit
+</code></pre>
+<p>This will take you back to the head node.</p>
+<h2 id="managing-pytorch-and-other-packages-with-python-virtual-environments">Managing pytorch and other packages with python virtual environments</h2>
+<p>To use additional libraries or different versions of pytorch and other libraries than what is available in the 
+python modules, use <a href="https://wiki.orc.gmu.edu/mkdocs/Python_Virtual_Environment/">Python Virtual Environments</a>. The following steps summarize the process.</p>
+<p><strong>NOTE</strong>: To make sure your Python Virtual Environment runs across all nodes, it is important to use the 
+versions of modules built for this. Before creating the Python Virtual Environment</p>
+<p>1 - First switch modules to GNU 10 compilations:</p>
+<pre><code>module load gnu10/10.3.0-ya
+</code></pre>
+<p>2 - Check and load python module</p>
+<pre><code>module avail python
+module load python/3.8.6-pi
+</code></pre>
+<p>3 - Now you can create the python virtual environment. After it is created, activate it and upgrade pip</p>
+<pre><code>python -m vevn pytorch-env
+
+source pytorch-env/bin/activate
+
+python -m pip install --upgrade pip
+
+</code></pre>
+<p>5 - Remove system python module and install torch modules (Refer to <a href="https://pytorch.org/get-started/locally/">this page</a> for updated instructions on installing Pytorch)</p>
+<pre><code>module unload python
+pip3 install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
+
+</code></pre>
+<p>6 - Install additional modules as needed, test your scripts and deactivate the python virtual environment once you're done.</p>
+<pre><code class="language-deactivate"></code></pre>
+<p>In your SLURM script, to run with the Python Virtual Environment, you activate the Python Virtual Environment instead of loading the python module.</p>
+<p>Sample script, <code>run.slurm</code>, for python virtual environments:</p>
+<pre><code>#!/bin/bash 
+#SBATCH --partition=gpuq 
+#SBATCH --qos=gpu 
+#SBATCH --job-name=gpu_basics 
+#SBATCH --output=gpu_basics.%j.out 
+#SBATCH --error=gpu_basics.%j.out 
+#SBATCH --nodes=1 
+#SBATCH --ntasks-per-node=&lt;N_CPU_CORES&gt; 
+#SBATCH --gres=gpu:A100.80gb:&lt;N_GPUs&gt; 
+#SBATCH --mem=&lt;MEMORY&gt;  
+#SBATCH --export=ALL 
+#SBATCH -time=0-01:00:00 
+#
+set echo 
+umask 0022 
+# to see ID and state of GPUs assigned
+nvidia-smi 
+
+## Load the necessary modules
+module load gnu10
+source activate ~/pytorch-env/bin/activate
+
+## Execute your script
+python main.py
+
+</code></pre>
+<h3 id="running-pytorch-with-singularity-containers">Running Pytorch with Singularity Containers</h3>
+<p>Containers and examples for running Pytorch are available for all users can be found on the cluster at </p>
+<pre><code>/containers/dgx/Containers/pytorch
+</code></pre>
+<p>and </p>
+<pre><code>/containers/dgx/Examples/Pytorch
+</code></pre>
+<p>You can copy the set up to your working directory on Hopper directly by</p>
+<pre><code>cp -r /containers/dgx/Examples/Pytorch/misc/* .
+</code></pre>
+<p>You can then modify the scripts to run in your directories. In the available example scripts the environmental variable $SINGULARITY_BASE points to <code>/containers/dgx/Containers</code>. Check <a href="https://wiki.orc.gmu.edu/mkdocs/DGX_A100_User_Guide/#running-containerized-applications">these pages</a> 
+for examples on runnig containerized version of Pytorch. </p>
+<h2 id="common-pytorch-issues">Common Pytorch Issues</h2>
+<ol>
+<li>GPU not recognized - In your Python Virtual Environment, you probably need to use an earlier version of Pytorch. Replace your pytorch install by re-installing an earlier verison e.g.:</li>
+</ol>
+<pre><code>pip3 install torch==1.8.1+cu111 torchvision==0.9.1+cu111 torchaudio==0.8.1 -f https://download.pytorch.org/whl/torch_stable.html
+
+</code></pre>
+<ol>
+<li>CUDA Memory Error - Refer to this page for documentation on dealing with this error: <a href="https://pytorch.org/docs/stable/notes/faq.html#my-gpu-memory-isn-t-freed-properly">Pytorch FAQs</a> </li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../jupyter-notebooks/" class="btn btn-neutral float-left" title="Running from Jupyter Notebooks"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../jupyter-notebooks/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
