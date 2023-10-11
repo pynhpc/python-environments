@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Tutorial - PyHPC</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Tutorial";
+        var mkdocs_page_input_path = "01-tutorial.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> PyHPC
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../02-about/">About</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Tutorial</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installing-maker-in-a-python-virtual-environment-with-miniconda3">Installing Maker in a python virtual environment with Miniconda3</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#running-in-batch-mode-with-slurm">Running in batch mode with SLURM</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples:</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#remove-the-unnecessary">Remove the Unnecessary</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup-your-site">Setup Your Site</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">PyHPC</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Tutorial</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="managing-python-packages-with-conda-environments-on-the-cluster">Managing Python Packages with Conda Environments on the Cluster</h1>
+<p>Conda environments are an excellent method for managing python packages and libraries in the cluster environment. One approach on clusters is using a centralized Anaconda3 Module, but from experience 
+this usually caused path issues and prevented other modules from working correctly. Instead, it is possible to use a mini version of Anaconda, miniconda which
+includes just conda and its dependencies. It is also very small and can be downloaded directly to your /home directory.</p>
+<p>The following instructions have steps for idownloading and installing Miniconda in your home directory on the cluster and running it.</p>
+<h2 id="installing-maker-in-a-python-virtual-environment-with-miniconda3">Installing Maker in a python virtual environment with Miniconda3</h2>
+<ol>
+<li>Download miniconda3:</li>
+</ol>
+<pre><code class="language-console">wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+</code></pre>
+<ol>
+<li>Install it in your preferred path:</li>
+</ol>
+<pre><code class="language-console"> bash miniconda.sh -b -p $HOME/miniconda
+</code></pre>
+<p>You can now create a custom conda environment. In the steps below, a conda environment for the package 'Maker' is created from
+a conda environment file.</p>
+<ol>
+<li>Activate base conda environment:</li>
+</ol>
+<pre><code class="language-console"> source $HOME/miniconda/bin/activate
+ export PYTHONNOUSERSITE=true
+
+</code></pre>
+<ol>
+<li>Download and create your virtual environment for maker using the environment yml file. This was generated from tests on the cluster so it should have all the necessary libraries. To download the environment.yml file <a href="maker/maker_3.01.03_environment.yml">maker_3.01.03_environment.yml</a> use:</li>
+</ol>
+<pre><code class="language-console">wget https://wiki.orc.gmu.edu/mkdocs/maker/maker_3.01.03_environment.yml
+</code></pre>
+<p>Then create the virtual environemnt with:</p>
+<pre><code class="language-console">conda env create -f maker_3.01.03_environment.yml
+
+</code></pre>
+<ol>
+<li>You should now be able to activate it with:</li>
+</ol>
+<pre><code class="language-console">conda activate maker_3.01.03
+
+</code></pre>
+<ol>
+<li>Alternatively, you can simply create the environment with</li>
+</ol>
+<pre><code class="language-console">conda env create -n maker_env
+</code></pre>
+<p>then activate it and install necessary libraries/use python with</p>
+<pre><code class="language-console">conda activate maker_3.01.03
+
+python
+</code></pre>
+<h2 id="running-in-batch-mode-with-slurm">Running in batch mode with SLURM</h2>
+<p>Below is an example of a SLURM script (<a href="maker/run.slurm">run.slurm</a>) to run in this conda environment. You can modify the different SLURM parameters to match what you need:</p>
+<p>Download the run.slurm script:</p>
+<pre><code class="language-console">wget https://wiki.orc.gmu.edu/mkdocs/maker/run.slurm
+</code></pre>
+<pre><code class="language-bash">#!/bin/bash
+#SBATCH --job-name=maker_test
+#SBATCH --partition=normal
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=64
+#SBATCH --output=maker_test_%j.out
+#SBATCH --error=maker_test_%j.err
+#SBATCH --mem=50GB
+#SBATCH --time=0-12:00:00
+
+### Load modules
+module unload openmpi4
+module load gnu10 openmpi
+
+### Activate virtual environment
+source /home/$USER/miniconda/bin/activate
+source activate maker_3.01.03
+
+### Set environment variables:
+export LIBDIR=/home/$USER/miniconda/envs/maker_3.01.03/share/RepeatMasker/Libraries
+
+### Execute program
+mpiexec -n ${SLURM_NTASKS_PER_NODE} maker [OPTIONS]
+</code></pre>
+<p>Run this with the sbatch command:</p>
+<pre><code class="language-console">sbatch run.slurm
+</code></pre>
+<p>If you ssh onto the node on which the jobs starts, you should see it now utilizes all the available cpus for maker. To see which nodes the job is running on, you can use the squeue command:</p>
+<pre><code class="language-console">squeue --me
+</code></pre>
+<h2 id="examples">Examples:</h2>
+<figure>
+  <img src="{{ '/assets/images/mm-gh-pages.gif' | relative_url }}" alt="creating a new branch on GitHub">
+</figure>
+
+<p>You can also install the theme by copying all of the theme files[^structure] into your project.</p>
+<p>To do so fork the <a href="https://github.com/mmistakes/minimal-mistakes/fork">Minimal Mistakes theme</a>, then rename the repo to <strong>USERNAME.github.io</strong> --- replacing <strong>USERNAME</strong> with your GitHub username.</p>
+<figure>
+  <img src="{{ '/assets/images/mm-theme-fork-repo.png' | relative_url }}" alt="fork Minimal Mistakes">
+</figure>
+
+<p><strong>GitHub Pages Alternatives:</strong> Looking to host your site for free and install/update the theme painlessly? [Netlify][netlify-jekyll], [GitLab Pages][gitlab-jekyll], and [Continuous Integration (CI) services][ci-jekyll] have you covered. In most cases all you need to do is connect your repository to them, create a simple configuration file, and install the theme following the <a href="#ruby-gem-method">Ruby Gem Method</a> above.
+{: .notice--info}</p>
+<h3 id="remove-the-unnecessary">Remove the Unnecessary</h3>
+<p>If you forked or downloaded the <code>minimal-mistakes-jekyll</code> repo you can safely remove the following folders and files:</p>
+<ul>
+<li><code>.editorconfig</code></li>
+<li><code>.gitattributes</code></li>
+<li><code>.github</code></li>
+<li><code>/docs</code></li>
+<li><code>/test</code></li>
+<li><code>CHANGELOG.md</code></li>
+<li><code>minimal-mistakes-jekyll.gemspec</code></li>
+<li><code>README.md</code></li>
+<li><code>screenshot-layouts.png</code></li>
+<li><code>screenshot.png</code></li>
+</ul>
+<p><strong>Note:</strong> If forking the theme be sure to update <code>Gemfile</code> as well. The one found at the root of the project is for building the theme's Ruby gem and is missing dependencies. To properly setup a <a href="https://github.com/mmistakes/minimal-mistakes/blob/master/docs/Gemfile"><code>Gemfile</code></a> with the theme, consult the "<a href="https://mmistakes.github.io/minimal-mistakes/docs/installation/#install-dependencies">Install Dependencies</a>" section.
+{: .notice--warning}</p>
+<h2 id="setup-your-site">Setup Your Site</h2>
+<p>Depending on the path you took installing Minimal Mistakes you'll setup things a little differently.</p>
+<p><strong>ProTip:</strong> The source code and content files for this site can be found in the <a href="https://github.com/mmistakes/minimal-mistakes/tree/master/docs"><code>/docs</code> folder</a> if you want to copy or learn from them.
+{: .notice--info}</p>
+<p>Then run <code>bundle update</code> and add <code>theme: minimal-mistakes-jekyll</code> to your <code>_config.yml</code>.</p>
+<p><strong>v4 Breaking Change:</strong> Paths for image headers, overlays, teasers, <a href="{{ &quot;/docs/helpers/#gallery&quot; | relative_url }}">galleries</a>, and <a href="{{ &quot;/docs/helpers/#feature-row&quot; | relative_url }}">feature rows</a> have changed and now require a full path. Instead of just <code>image: filename.jpg</code> you'll need to use the full path eg: <code>image: /assets/images/filename.jpg</code>. The preferred location is now <code>/assets/images/</code> but can be placed elsewhere or externally hosted. This applies to image references in <code>_config.yml</code> and <code>author.yml</code> as well.
+{: .notice--danger}</p>
+<hr />
+<p>That's it! If all goes well running <code>bundle exec jekyll serve</code> should spin-up your site.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../02-about/" class="btn btn-neutral float-left" title="About"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../02-about/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
