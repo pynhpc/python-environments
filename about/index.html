@@ -42,6 +42,10 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">Home</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#about-the-tutorials">About the Tutorials</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#tutorial-pages">Tutorial Pages</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -88,23 +92,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <p>Minimal Mistakes is a flexible two-column Jekyll theme. Perfect for hosting your personal site, blog, or portfolio on GitHub or self-hosting on your own server. As the name implies --- styling is purposely minimalistic to be enhanced and customized by you :smile:.</p>
-<p>{% include gallery id="layouts_gallery" caption="Examples of included layouts <code>splash</code>, <code>single</code>, and <code>archive</code>." %}</p>
-<p><a href="{{ &quot;/docs/quick-start-guide/&quot; | relative_url }}">Install the Theme</a>{: .btn .btn--success .btn--large}</p>
-<h2 id="notable-features">Notable Features</h2>
-<ul>
-<li>Bundled as a "theme gem" for easier install/upgrading.</li>
-<li>Compatible with GitHub Pages.</li>
-<li>Support for Jekyll's built-in Sass/SCSS preprocessor.</li>
-<li>Nine different skins (color variations).</li>
-<li>Several responsive layout options (single, archive index, search, splash, and paginated home page).</li>
-<li>Optimized for search engines with support for <a href="https://dev.twitter.com/cards/overview">Twitter Cards</a> and <a href="http://ogp.me/">Open Graph</a> data</li>
-<li>Optional <a href="https://mmistakes.github.io/minimal-mistakes/docs/layouts/#headers">header images</a>, <a href="https://mmistakes.github.io/minimal-mistakes/docs/layouts/#sidebars">custom sidebars</a>, <a href="https://mmistakes.github.io/minimal-mistakes/docs/helpers/#table-of-contents">table of contents</a>, <a href="https://mmistakes.github.io/minimal-mistakes/docs/helpers/#gallery">galleries</a>, related posts, <a href="https://mmistakes.github.io/minimal-mistakes/docs/configuration/#breadcrumb-navigation-beta">breadcrumb links</a>, <a href="https://mmistakes.github.io/minimal-mistakes/docs/helpers/#navigation-list">navigation lists</a>, and more.</li>
-<li>Commenting support (powered by <a href="https://disqus.com/">Disqus</a>, <a href="https://developers.facebook.com/docs/plugins/comments">Facebook</a>, <a href="https://www.discourse.org/">Discourse</a>, <a href="https://utteranc.es/">utterances</a>, <a href="https://giscus.app/">giscus</a>, static-based via <a href="https://staticman.net/">Staticman v1 and v2</a>, and custom).</li>
-<li><a href="https://www.google.com/analytics/">Google Analytics</a> support.</li>
-<li>UI localized text in English (default), Arabic (عربي), Brazilian Portuguese (Português brasileiro), Catalan, Chinese, Danish, Dutch, Finnish, French (Français), German (Deutsch), Greek, Hebrew, Hindi (हिंदी), Hungarian, Indonesian, Irish (Gaeilge), Italian (Italiano), Japanese, Kiswahili, Korean, Malayalam, Myanmar (Burmese), Nepali (Nepalese), Norwegian (Norsk), Persian (فارسی), Polish, Punjabi (ਪੰਜਾਬੀ), Romanian, Russian, Slovak, Spanish (Español), Swedish, Thai, Turkish (Türkçe), and Vietnamese.</li>
-</ul>
-<h2 id="demo-pages">Demo Pages</h2>
+                <h1 id="python-on-hpc-clusters">Python on HPC Clusters</h1>
+<h2 id="about-the-tutorials">About the Tutorials</h2>
+<p>This tutorial series covers topics on using Python on HPC clusters. 
+The specific steps are based on the HOPPER cluster at George Mason University in Fairfax, VA.
+They should be implementable on most HPC clusters that have the <a href="https://www.schedmd.com/">SLURM</a> scheduler installed, the <a href="https://modules.sourceforge.net/">Environment Modules</a> system for managing packages and <a href="https://openondemand.org/">Open onDemand</a> for a web-based GUI to access 
+the cluster resources. </p>
+<hr />
+<h2 id="tutorial-pages">Tutorial Pages</h2>
 <table>
 <thead>
 <tr>
@@ -143,37 +138,9 @@
 </tr>
 </tbody>
 </table>
-<p>For even more demo pages check the [posts archive][year-archive].</p>
-<p>[header-image-post]: {{ "" | relative_url }}{% post_url 2012-03-15-layout-header-image-text-readability %}
-[gallery-post]: {{ "" | relative_url }}{% post_url 2010-09-09-post-gallery %}
-[html-tags-post]: {{ "" | relative_url }}{% post_url 2013-01-11-markup-html-tags-and-formatting %}
-[syntax-post]: {{ "" | relative_url }}{% post_url 2013-08-16-markup-syntax-highlighting %}
-[sample-collection]: {{ "/recipes/chocolate-chip-cookies/" | relative_url }}
-[categories-archive]: {{ "/categories/" | relative_url }}
-[tags-archive]: {{ "/tags/" | relative_url }}
-[year-archive]: {{ "/year-archive/" | relative_url }}</p>
 <hr />
-<h2 id="credits">Credits</h2>
-<h3 id="icons-demo-images">Icons + Demo Images:</h3>
-<ul>
-<li><a href="https://thenounproject.com">The Noun Project</a> -- Garrett Knoll, Arthur Shlain, and <a href="https://thenounproject.com/tracytam">tracy tam</a></li>
-<li><a href="http://fontawesome.io/">Font Awesome</a></li>
-<li><a href="https://unsplash.com/">Unsplash</a></li>
-</ul>
-<h3 id="other">Other:</h3>
-<ul>
-<li><a href="https://jekyllrb.com/">Jekyll</a></li>
-<li><a href="https://jquery.com/">jQuery</a></li>
-<li><a href="http://susy.oddbird.net/">Susy</a></li>
-<li><a href="http://breakpoint-sass.com/">Breakpoint</a></li>
-<li><a href="http://dimsemenov.com/plugins/magnific-popup/">Magnific Popup</a></li>
-<li><a href="http://fitvidsjs.com/">FitVids.JS</a></li>
-<li>Greedy Navigation - <a href="https://codepen.io/lukejacksonn/pen/PwmwWV">lukejacksonn</a></li>
-<li><a href="https://github.com/kswedberg/jquery-smooth-scroll">jQuery Smooth Scroll</a></li>
-<li><a href="http://lunrjs.com">Lunr</a></li>
-</ul>
+<p>For more tutorials and other demos for the GMU Hopper Cluster, you can check out the <a href="wiki.orc.gmu.edu">GMU ORC Wiki pages</a>.</p>
 <hr />
-<p>Minimal Mistakes is designed, developed, and maintained by Michael Rose. Just another boring, tattooed, designer from Buffalo New York.</p>
               
             </div>
           </div><footer>
